@@ -45,3 +45,4 @@ Local Repository to Central Repository:
 ---------------------------------------
 git clone <url>         --> download repository data from Central Repo to the Local system 
 git push                --> this will push all the files from local to Central Repo
+git pull --rebase       --> this will download all remote repo files into ourlocal machine. 
