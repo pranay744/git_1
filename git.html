@@ -8,6 +8,10 @@ git config --global user.name "Himanshu Reddy"
 git config --global user.email "khimanshureddy@gmail.com"
 git config --list
 
+Removing the User details:-
+--------------------------
+git config --global --unset user.name "Himanshu Reddy"
+git config --global --unset user.email "khimanshureddy@gmail.com"
 
 GIT Architecture:
 -----------------
@@ -52,9 +56,9 @@ git pull --rebase       --> this will download all remote repo files into ourloc
 Logs:
 -----
 git log -n <number>           --> This will display how many number of logs you want to print.
- git log --oneline            --> Display all logs in the single line
- git log --oneline -n 3       --> Display Fist 3 logs
- git log --author "pranay"     --> Display the logs with the author name
+git log --oneline            --> Display all logs in the single line
+git log --oneline -n 3       --> Display Fist 3 logs
+git log --author "pranay"     --> Display the logs with the author name
 
 Branching:
 ----------
@@ -71,5 +75,13 @@ Deleting Branches:
 ------------------
 git branch -d <branch name> --> Deleting branch in Local
 git push origin -d <branch name> --> Delete Branch in Remote Repository
+
+Conflicts:
+----------
+1>abort
+2>Manual
+3>Auto merging
+
+git merge --abort           --> cancel the merging process 
 </h1>
 </html>
