@@ -6,6 +6,11 @@ git config --global user.name "Himanshu Reddy"
 git config --global user.email "khimanshureddy@gmail.com"
 git config --list
 
+Removing the User details:-
+--------------------------
+git config --global --unset user.name "Himanshu Reddy"
+git config --global --unset user.email "khimanshureddy@gmail.com"
+
 
 GIT Architecture:
 -----------------
