@@ -1,0 +1,264 @@
+controlplane ~ ➜  kubectl --help
+kubectl controls the Kubernetes cluster manager.
+
+ Find more information at: https://kubernetes.io/docs/reference/kubectl/
+
+Basic Commands (Beginner):
+  create          Create a resource from a file or from stdin
+  expose          Take a replication controller, service, deployment or pod and expose it as a new Kubernetes service
+  run             Run a particular image on the cluster
+  set             Set specific features on objects
+
+Basic Commands (Intermediate):
+  explain         Get documentation for a resource
+  get             Display one or many resources
+  edit            Edit a resource on the server
+  delete          Delete resources by file names, stdin, resources and names, or by resources and label selector
+
+Deploy Commands:
+  rollout         Manage the rollout of a resource
+  scale           Set a new size for a deployment, replica set, or replication controller
+  autoscale       Auto-scale a deployment, replica set, stateful set, or replication controller
+
+Cluster Management Commands:
+  certificate     Modify certificate resources.
+  cluster-info    Display cluster information
+  top             Display resource (CPU/memory) usage
+  cordon          Mark node as unschedulable
+  uncordon        Mark node as schedulable
+  drain           Drain node in preparation for maintenance
+  taint           Update the taints on one or more nodes
+
+Troubleshooting and Debugging Commands:
+  describe        Show details of a specific resource or group of resources
+  logs            Print the logs for a container in a pod
+  attach          Attach to a running container
+  exec            Execute a command in a container
+  port-forward    Forward one or more local ports to a pod
+  proxy           Run a proxy to the Kubernetes API server
+  cp              Copy files and directories to and from containers
+  auth            Inspect authorization
+  debug           Create debugging sessions for troubleshooting workloads and nodes
+  events          List events
+
+Advanced Commands:
+  diff            Diff the live version against a would-be applied version
+  apply           Apply a configuration to a resource by file name or stdin
+  patch           Update fields of a resource
+  replace         Replace a resource by file name or stdin
+  wait            Experimental: Wait for a specific condition on one or many resources
+  kustomize       Build a kustomization target from a directory or URL
+
+Settings Commands:
+  label           Update the labels on a resource
+  annotate        Update the annotations on a resource
+  completion      Output shell completion code for the specified shell (bash, zsh, fish, or powershell)
+
+Other Commands:
+  api-resources   Print the supported API resources on the server
+  api-versions    Print the supported API versions on the server, in the form of "group/version"
+  config          Modify kubeconfig files
+  plugin          Provides utilities for interacting with plugins
+  version         Print the client and server version information
+
+Usage:
+  kubectl [flags] [options]
+
+Use "kubectl <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands
+
+================================================================================================================================
+							Kubernetes Architecture
+							=======================
+When you install Kubernetes on a System, you are actually installing the 
+following components.When Kubernetes Installed on the Host, 
+actually below Components will instlall by default.
+	1>API Server
+	2>etcd:
+	3>kubelet
+	4>Continer Runtime (rkt, CRI-O)
+	5>Controller
+	6>Scheduler: 
+
+Control Plane Components:
+	1>API Server
+	2>etcd: Entir Cluster Information will be stored in the form of Key value pair
+	3>scheduler: is responsible for schedulabling pods on worker node,
+	4>Controller manger: Manages the pods ( Replicaset). If you mention in the yaml 
+		file where you need to run with 2 pods, Controller will always maintain 
+		that replicaset in the respective pods.
+	5>Cloud Controler manger:
+	
+Data Plane:(Worker Node)
+	1>kublet (Is responsible for running a pod, if not running then intimate to kube apiserver)
+	2>Kube-proxy (Default Loadbalancing, IP address,Networking) IP tables will be used from LInux system
+	3>Continer Runtime ( Is used to runs a docker continer)
+	
+	
+1>API Server: 
+	The API server acts as the front-end for kubernetes. The users, management devices, 
+Command line interfaces all talk to the API server to interact with the kubernetes
+cluster.
+
+2>etcd
+	Next is the ETCD key store. ETCD is a distributed reliable key-value store used by 
+kubernetes to store all data used to manage the cluster. Think of it this way, when you 
+have multiple nodes and multiple masters in your cluster, etcd stores all that 
+information on all the nodes in the cluster in a distributed manner. ETCD is 
+responsible for implementing locks within the cluster to ensure there are no conflicts 
+between the Masters. 
+
+=========================================================
+Commands:
+
+
+kubectl run nginx --image nginx	--> kubectl run cmd used to deploy an application 
+kubectl get pods				--> Get the List of Pods 
+									on cluster
+kubectl cluster info 			--> this is used to display the cluster information
+kubectl get nodes 				--> this is used to get all nodes of the cluster
+kubectl describe pod newpods-wnfm5 --> To see the Pod Configurations.
+kubectl get pods -o wide		--> this display all the information about 
+									the pod including Networking
+kubectl run redis --image=redis --dry-run-client -o yaml > redis.yaml
+								This cmd will create a yaml file for redis image
+kubectl create -f redis.yaml 	--> this will create a pod from redis.yaml
+kubectl edit pod <pod-name> 	--> To modify the properties of the pod							
+==========================================================
+Pod Defination file for Nginx
+===========================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+	
+=====================================
+Replicaset or Replication Controller
+=====================================
+The major difference b/w Replication controller, replicaset would be selector under spec. 
+kubeclt create -f rc-defination.yaml 	-> to create new replication controller pods
+kubectl get replicationcontoller		-> To see the number of replication controller
+
+YAML Defination:
+===============
+apiVersion: v1
+kind: ReplicationController
+metadata:
+ name: webapplication
+ labels:
+  env: test
+spec:
+ template:
+
+  metadata:
+   name: nginx
+   labels:   
+    env: test
+    type: front-end
+  spec:
+    containers:
+    - name: webapplication
+      image: nginx
+
+ replicas: 2
+
+
+======================================
+Replica set:
+==========================
+selector:
+ matchLabels:
+  type: front-end
+
+Commands:
+=========
+kubectl get replicaset --> used to see the list of replicas get created 
+clear
+kubectl delete replicaset myapp-replicaset -- to delete a list of replicasets
+kubectl replace -f replicaset-defination.yaml --> 
+	when you changed the replicaset value from 3 to 6, you need to 
+	reload the yaml file using this cmd.
+kubectl scale rs new-replica-set --replicas=5
+kubectl scale --replicas=6 -f replicaset-defination.yaml -->
+	this is scale the replicas without modificaiton yaml file 
+	
+==============================================	
+Deployments:
+==============================================
+Defination file exactly the same as replicaset but the kind must be deployment. 
+Once you created with the deployment file, it will automatically creates deployments, replicasets and  pods.
+apiVersion: apps/v1
+kind: Deployment
+
+Commands:
+=========
+kubectl get all 									--> Which will display (deploymetns, replicaset and pods)
+kubectl create -f deployment-definationfile.yaml 	--> which will create deployment 
+kubeclt get deployments
+kubectl get replicaset
+kubectl get pods
+
+kubectl create deployment httpd-frontend --image=httpd:2.4-alpine --replicas=3--> Create a deployment with image httpd:2.4-alpine and name httpd-frontend
+												  replicas 3
+												  
+===============================================
+Name Spaces:
+===============================================
+By default K8's will create a default Namespace and make available for new users. Along with Defulat NS, K8's also creats Kube-system and kube-public
+
+Kube-system:
+Kube-public:
+
+yaml defination:
+---------------
+apiVersion: v1
+kind: Namespace
+metadata:
+ name: dev
+ 
+kubectl create -f namespace.yaml
+Commands:
+========
+kubectl config current-context		--> to know the which namespace you are in currently
+kubectl create namespace dev		--> To create new Namespace
+kubectl get pods --all-namespaces	--> to see the pods from all namespaces
+kubectl run redis --image redis --namespace=finance --> Create a Redis pod under finance Namespace.
+kubectl create deployment Nginx --image=nginx --namespace=Dev --replicas=6 --dry-run=client -o yaml > Deployment_namespace.yaml
+									--> this will create Nginx server in Dev Namespace with 6 replicas  in Nginx deployment zone
+How to access the other namespace DB from default web-pod:-
+--------------------------------------------------
+mysql.connect("db-service.dev.svc.cluster.local")
+how to access the DB service in the same namespace from web-pod:-
+---------------------------------------------------------------
+mysql.connect("db-service")
+									
+									SWITCH
+									------
+kubectl conf set-context $(kubectl config current-context) --namespace=dev   --> this will change the Namespace permanently. 
+
+									RESOURCE QUOTA
+									-------------
+To limit a resource quota, you need to create a resource quota. 
+
+Compute-quota.yaml
+------------------			
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+ name: Comute-quota
+ namespace: dev 
+spec:
+ hard:
+  pods: "10"
+  requests.cpu: "4"
+  requests.memory: 5Gi
+  limits.cpu: "10"
+  limits.memory: 10Gi
+ 
+kubectl create of compute-quota.yaml.
