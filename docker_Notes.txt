@@ -312,3 +312,15 @@ NETWORKS:
 
 
 
+=======================================================================
+						CLI-nerdctl		/ crictl for rocket		/ctl
+Docker replaced with nerdctl
+->nerdctl provides a Docker-like CLI for containerD
+->nerdctl supports docker compose
+->nerdctl supports newest features in containerD
+		>Encrypted conatiner images
+		>lazy Pulling
+		>P2P image distribution
+		>Image signing and verifying
+		>Namespaces in Kubernetes
+		
